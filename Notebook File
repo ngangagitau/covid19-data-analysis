@@ -1,0 +1,26 @@
+**Basic Structure:**
+
+```python
+# covid19_analysis.ipynb
+
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Load the dataset
+url = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv"
+df = pd.read_csv(url)
+
+# Process data
+df_total = df.drop(columns=["Province/State", "Lat", "Long"]).groupby("Country/Region").sum()
+df_total = df_total.T
+df_total.index = pd.to_datetime(df_total.index)
+
+# Plot total cases for top 5 countries
+top_countries = df_total.iloc[-1].sort_values(ascending=False).head(5).index
+df_total[top_countries].plot(figsize=(14, 8))
+plt.title("Top 5 Countries by COVID-19 Confirmed Cases")
+plt.xlabel("Date")
+plt.ylabel("Confirmed Cases")
+plt.grid(True)
+plt.show()
